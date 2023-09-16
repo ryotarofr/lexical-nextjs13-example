@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 
 /* Lexical Design System */
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
@@ -29,51 +29,140 @@ import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
+import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import ExampleTheme from "@/app/themes/ExampleTheme";
 
 /* Lexical Texts */
 import { textDailyStandup } from "./text-daily-standup";
 import EmojiPickerPlugin from "@/app/plugins/EmojiPickerPlugin";
 import ComponentPickerMenuPlugin from "@/app/plugins/ComponentPickerPlugin";
+import axios from "axios";
+import { $getRoot, $getSelection } from "lexical";
+import useGetAllNaisei from "../hooks/useGetNaiseiAll";
+import { useNaiseiIdStore } from "../hooks/useNaiseiIdStore";
+import toast from "react-hot-toast";
+import ExportPluginJson from "../plugins/ExportPluginJson";
+import { CreateNaisei } from "../components/PostContent/CreateNaisei";
 
 function Placeholder() {
     return <div className="editor-placeholder">Enter some rich text...</div>;
 }
 
-const editorConfig = {
-    // The editor theme
-    theme: ExampleTheme,
-    namespace: "daily-standup-editor",
-    editorState: textDailyStandup,
-    // Handling of errors during update
-    onError(error: unknown) {
-        throw error;
-    },
-    // Any custom nodes go here
-    nodes: [
-        HeadingNode,
-        ListNode,
-        ListItemNode,
-        QuoteNode,
-        CodeNode,
-        CodeHighlightNode,
-        TableNode,
-        TableCellNode,
-        TableRowNode,
-        AutoLinkNode,
-        LinkNode
-    ],
-};
+const EvaluationType = {
+    A: 'A',
+    B: 'B',
+    C: 'C',
+    D: 'D',
+    E: 'E',
+}
+
 
 export function Editor(): JSX.Element | null {
 
-    const [isMounted, setIsMounted] = useState(false)
+    // const [isMounted, setIsMounted] = useState(false)
+
+    // useEffect(() => {
+    //     setIsMounted(true);
+    // }, [])
+
+    // if (!isMounted) return null
+
+
+
+
+    const selectedId = useNaiseiIdStore((state) => state.selectedId)
+
+    const [evaluationType, setEvaluationType] = useState(EvaluationType.A);
+    const [naisei, setNaisei] = useState('')
+    const [isLoading, setIsLoading] = useState(true)
+    const { data, loading, hasErrors, fetch }: any = useGetAllNaisei()
 
     useEffect(() => {
-        setIsMounted(true);
-    }, [])
+        setNaisei("")
+        setIsLoading(false)
 
-    if (!isMounted) return null
+        if (selectedId !== null) {
+            // data配列から選択されたIDに一致する要素を探す
+            const selectedData = data.find((item: any) => item.id === selectedId);
+            if (selectedData) {
+                setNaisei(selectedData.naisei);
+                setIsLoading(true)
+            } else {
+                setNaisei(""); // データが見つからない場合は空に設定
+            }
+        } else {
+            setNaisei(""); // selectedNaiseiIdがnullの場合も空に設定
+        }
+    }, [selectedId, data])
+    console.log("naisei", naisei);
+
+    const exportAsJson = (contenAsJson: string) => {
+        setNaisei(contenAsJson)
+        return contenAsJson
+    };
+
+    function onChange(editorState: any) {
+        editorState.read(() => {
+            const root = $getRoot();
+            const selection = $getSelection();
+            const tomato = root.__cachedText
+
+
+        });
+    }
+
+    const handleUpdate = async (e: SyntheticEvent) => {
+        e.preventDefault();
+        setNaisei("")
+        const apiUrl = `/api/naisei/${selectedId}`;
+        const updatedData = {
+            // リクエストボディに送信するデータ
+            naisei: naisei,
+            evaluation_type: evaluationType,
+        };
+        axios.put(apiUrl, updatedData)
+            .then(response => {
+                toast.success('Updated Naisei!!!!')
+                fetch()
+                return response
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    };
+    // console.log("naisei", naisei);
+
+
+
+    const editorConfig = {
+        // The editor theme
+        theme: ExampleTheme,
+        namespace: "daily-standup-editor",
+        // editorState: textDailyStandup,
+        editorState: naisei,
+        // Handling of errors during update
+        onError(error: unknown) {
+            throw error;
+        },
+        // Any custom nodes go here
+        nodes: [
+            HeadingNode,
+            ListNode,
+            ListItemNode,
+            QuoteNode,
+            CodeNode,
+            CodeHighlightNode,
+            TableNode,
+            TableCellNode,
+            TableRowNode,
+            AutoLinkNode,
+            LinkNode
+        ],
+    };
+
+
+    if (!naisei) return <></>
+    if (!isLoading) return <div className='text-white'>loading</div>
 
     return (
         <LexicalComposer initialConfig={editorConfig}>
@@ -85,6 +174,7 @@ export function Editor(): JSX.Element | null {
                         placeholder={<Placeholder />}
                         ErrorBoundary={LexicalErrorBoundary}
                     />
+                    <OnChangePlugin onChange={onChange} />
                     <ListPlugin />
                     <HistoryPlugin />
                     <AutoFocusPlugin />
@@ -93,10 +183,12 @@ export function Editor(): JSX.Element | null {
                     <TabIndentationPlugin />
                     <AutoLinkPlugin />
 
+                    <ExportPluginJson exportAsJSON={exportAsJson} />
                     <EmojiPickerPlugin />
                     <ComponentPickerMenuPlugin />
 
                     <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+                    <CreateNaisei />
                     {/* <TreeViewPlugin /> */}
                 </div>
             </div>

@@ -1,6 +1,4 @@
 import NavBar from "../components/Navbar"
-import { Editor } from "./text-editor"
-
 import "./styles.css"
 const SiteLayout = async ({
   children,
@@ -10,7 +8,6 @@ const SiteLayout = async ({
   return (
     <div className="App">
       <NavBar />
-      {/* <Editor /> */}
       {children}
     </div>
   )

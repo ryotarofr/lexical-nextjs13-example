@@ -37,3 +37,6 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 # lexical-nextjs13-example
 # lexical-nextjs13-example
+
+
+note/page.tsxが初期のフェッチでデータの取得が反映されないからこれ修正
