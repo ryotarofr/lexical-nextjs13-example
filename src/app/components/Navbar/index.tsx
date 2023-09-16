@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { BsMenuApp } from "react-icons/bs"
 import { useState } from "react";
+import { UserButton } from "@clerk/nextjs";
 
 const navItems = [
   {
@@ -23,22 +24,15 @@ const navItems = [
 ];
 
 export default function NavBar() {
-
-  const [open, setOpen] = useState(false)
-
-  const handleClick = () => {
-    setOpen(prev => !prev)
-  }
-
   let pathname = usePathname() || "/";
 
   return (
     <div className=" p-[0.4rem] rounded-lg mb-12 sticky top-4 z-[100]">
-      <nav className="flex gap-2 relative justify-around w-full z-[100]  rounded-lg">
+      <nav className="flex gap-2 relative justify-around items-center w-full z-[100]  rounded-lg">
         <div className="hidden sm:block">
           <Link href="/" className="flex items-center no-underline text-zinc-900">
-            <Image width={30} height={30} alt="Logo" src="/logo.png" />
-            <span className="text-xl">
+            <Image width={36} height={36} alt="Logo" src="/logo.png" />
+            <span className="text-2xl">
               Naisei
             </span>
           </Link>
@@ -59,22 +53,7 @@ export default function NavBar() {
             );
           })}
         </div>
-        {/* <button className="sm:hidden border-none cursor-pointer" onClick={handleClick}>
-          <BsMenuApp size={24} />
-        </button> */}
-        {/* <div>
-          <button className="relative group border-none" onClick={handleClick}>
-            <div className="relative flex overflow-hidden items-center justify-center rounded-full w-[36px] h-[36px] transform transition-all  ring-0 ring-gray-300 group-focus:ring-4 ring-opacity-10 duration-200">
-              <div className="flex flex-col justify-between w-[20px] h-[20px] transform transition-all duration-300 origin-center overflow-hidden">
-                <div className="bg-zinc-900 h-[2px] w-7 transform transition-all duration-300 origin-left group-focus:rotate-[42deg]"></div>
-                <div className="bg-zinc-900 h-[2px] w-1/2 rounded transform transition-all duration-300 group-focus:-translate-x-10"></div>
-                <div className="bg-zinc-900 h-[2px] w-7 transform transition-all duration-300 origin-left group-focus:-rotate-[42deg]"></div>
-              </div>
-            </div>
-          </button>
-        </div>
-        {open ? <>test</> : <>not open</>} */}
-        {/* ここにclerkのuserIcon入れる */}
+        <UserButton afterSignOutUrl="/" />
       </nav>
 
     </div >
