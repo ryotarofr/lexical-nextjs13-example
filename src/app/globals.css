@@ -7,7 +7,7 @@
 @tailwind utilities;
 
 :root ::selection {
-  background-color: rgb(255, 94, 98);
+  background-color: rgb(56, 197, 129);
   color: white;
 }
 
