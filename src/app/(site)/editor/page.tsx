@@ -1,8 +1,8 @@
 "use client"
 
 import React from 'react';
-import "@/app/styles.css";
-import { Editor } from '@/app/text-editor'
+import "@/app/(site)/editor/styles.css"
+import { Editor } from '@/app/(site)/editor/text-editor'
 import { TypingAnimation } from '@/app/components/typing-animation';
 
 export default function Home() {
