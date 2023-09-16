@@ -33,6 +33,8 @@ import ExampleTheme from "@/app/themes/ExampleTheme";
 
 /* Lexical Texts */
 import { textDailyStandup } from "./text-daily-standup";
+import EmojiPickerPlugin from "@/app/plugins/EmojiPickerPlugin";
+import ComponentPickerMenuPlugin from "@/app/plugins/ComponentPickerPlugin";
 
 function Placeholder() {
     return <div className="editor-placeholder">Enter some rich text...</div>;
@@ -90,6 +92,10 @@ export function Editor(): JSX.Element | null {
                     <LinkPlugin />
                     <TabIndentationPlugin />
                     <AutoLinkPlugin />
+
+                    <EmojiPickerPlugin />
+                    <ComponentPickerMenuPlugin />
+
                     <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
                     {/* <TreeViewPlugin /> */}
                 </div>
