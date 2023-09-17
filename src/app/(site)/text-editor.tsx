@@ -33,16 +33,16 @@ import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import ExampleTheme from "@/app/themes/ExampleTheme";
 
 /* Lexical Texts */
-import { textDailyStandup } from "./text-daily-standup";
 import EmojiPickerPlugin from "@/app/plugins/EmojiPickerPlugin";
 import ComponentPickerMenuPlugin from "@/app/plugins/ComponentPickerPlugin";
 import axios from "axios";
 import { $getRoot, $getSelection } from "lexical";
 import useGetAllNaisei from "../hooks/useGetNaiseiAll";
 import { useNaiseiIdStore } from "../hooks/useNaiseiIdStore";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import ExportPluginJson from "../plugins/ExportPluginJson";
-import { CreateNaisei } from "../components/PostContent/CreateNaisei";
+import { useToggleEditor } from "../hooks/useToggleEditor";
+// import useGetIsNaisei from "../hooks/useGetNaiseiId";
 
 function Placeholder() {
     return <div className="editor-placeholder">Enter some rich text...</div>;
@@ -74,19 +74,20 @@ export function Editor(): JSX.Element | null {
 
     const [evaluationType, setEvaluationType] = useState(EvaluationType.A);
     const [naisei, setNaisei] = useState('')
-    const [isLoading, setIsLoading] = useState(true)
-    const { data, loading, hasErrors, fetch }: any = useGetAllNaisei()
+    const { data, loading, fetch }: any = useGetAllNaisei()
+    // const { dataIsNaisei, fetchIsNaisei }: any = useGetIsNaisei()
+    const { onClose } = useToggleEditor()
+
 
     useEffect(() => {
         setNaisei("")
-        setIsLoading(false)
 
         if (selectedId !== null) {
             // data配列から選択されたIDに一致する要素を探す
             const selectedData = data.find((item: any) => item.id === selectedId);
             if (selectedData) {
                 setNaisei(selectedData.naisei);
-                setIsLoading(true)
+
             } else {
                 setNaisei(""); // データが見つからない場合は空に設定
             }
@@ -113,6 +114,7 @@ export function Editor(): JSX.Element | null {
 
     const handleUpdate = async (e: SyntheticEvent) => {
         e.preventDefault();
+        onClose()
         setNaisei("")
         const apiUrl = `/api/naisei/${selectedId}`;
         const updatedData = {
@@ -122,17 +124,15 @@ export function Editor(): JSX.Element | null {
         };
         axios.put(apiUrl, updatedData)
             .then(response => {
-                toast.success('Updated Naisei!!!!')
+                // toast.success('Updated Naisei!!!!', { duration: 5000 })
+                // fetchIsNaisei()
                 fetch()
                 return response
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
             });
-    };
-    // console.log("naisei", naisei);
-
-
+    }
 
     const editorConfig = {
         // The editor theme
@@ -162,7 +162,6 @@ export function Editor(): JSX.Element | null {
 
 
     if (!naisei) return <></>
-    if (!isLoading) return <div className='text-white'>loading</div>
 
     return (
         <LexicalComposer initialConfig={editorConfig}>
@@ -188,7 +187,14 @@ export function Editor(): JSX.Element | null {
                     <ComponentPickerMenuPlugin />
 
                     <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
-                    <CreateNaisei />
+                    {/* <CreateNaisei /> */}
+                    <form>
+                        <button className='' onClick={handleUpdate}>Update Naisei</button>
+                        <Toaster
+                            position="top-center"
+                            reverseOrder={false}
+                        />
+                    </form>
                     {/* <TreeViewPlugin /> */}
                 </div>
             </div>

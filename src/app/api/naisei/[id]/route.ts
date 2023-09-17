@@ -10,7 +10,7 @@ export const GET = async (req: Request, res: NextResponse) => {
 
     await main();
 
-    const getNaiseiById = await prismadb.naisei.findMany({
+    const getNaiseiById = await prismadb.naisei.findFirst({
       where: {
         // created_at: {
         //   gte: new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate(), 1), // 指定した日付の日初めを取得

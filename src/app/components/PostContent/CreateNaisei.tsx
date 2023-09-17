@@ -6,7 +6,6 @@ import useGetAllNaisei from "@/app/hooks/useGetNaiseiAll";
 
 
 export const CreateNaisei = () => {
-  const { fetch }: any = useGetAllNaisei()
 
   const defaultValue = '{"root":{"children":[{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"example.","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1}],"direction":"ltr","format":"","indent":0,"type":"root","version":1}}'
 
@@ -20,8 +19,8 @@ export const CreateNaisei = () => {
     };
     await axios.post(apiUrl, createData)
       .then(response => {
-        toast.success('Created Naisei!!')
-        fetch()
+        // toast.success('Created Naisei!!')
+        // fetch()
         console.log("/editorでデータをフェッチ");
         return response
       })
@@ -29,11 +28,6 @@ export const CreateNaisei = () => {
         console.error('Error fetching data:', error);
       });
   }
-
-  useEffect(() => {
-    fetch()
-    console.log("/editorでデータをフェッチ");
-  }, [fetch])
   return (
 
     <>

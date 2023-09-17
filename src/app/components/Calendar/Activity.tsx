@@ -3,7 +3,6 @@
 import { format } from "date-fns"
 import { useEffect, useState } from "react"
 import { BiEdit } from "react-icons/bi"
-import { CreateNaisei } from "../PostContent/CreateNaisei"
 import useGetAllNaisei from "@/app/hooks/useGetNaiseiAll"
 import useNaiseiFrontEnd from "@/app/hooks/useNaiseiFrontEnd"
 import useRefreshStore from "@/app/hooks/useRefreshStore"
@@ -12,7 +11,7 @@ import { useNaiseiIdStore } from "@/app/hooks/useNaiseiIdStore"
 
 export const Activity = () => {
   const [selectData, setSelectData] = useState([])
-  const { data }: any = useGetAllNaisei()
+  const { data, loading }: any = useGetAllNaisei()
   const { allData, setAllData }: any = useNaiseiFrontEnd()
   const { toggleRefresh } = useRefreshStore();
   const selectedDay = useDateStore((state) => state.selectedDay);
@@ -48,7 +47,15 @@ export const Activity = () => {
         }
         replacedData.push(item);
       }
-      setAllData(replacedData)
+      const newCreatedAt = replacedData.map((item: any) => {
+        return {
+          id: item.id,
+          naisei: item.naisei,
+          created_at: item.created_at.split('T')[0] // 日付部分だけを取得
+        };
+      });
+      setAllData(newCreatedAt)
+      // setAllData(replacedData)
     }
     processData();
   }, [data, setAllData])
@@ -76,35 +83,40 @@ export const Activity = () => {
 
   return (
     <>
-      <div className="text-white text-center text-2xl">
+      <div className=" text-center text-2xl">
         <span className="border-b italic">Activity</span>
       </div>
-      {selectData ?
-        <div className="flex justify-center">
-          <div className="text-white">
-            {
-              selectData.map((item: any) => (
-                <div
-                  className="flex mr-6 cursor-pointer"
-                  key={item.id}
-                  onClick={() => handleItemClick(item.id)}
-                >
-                  <BiEdit className="my-4 mr-4" size={24} color="white" />
-                  <div className="my-4 truncate">
-                    {item.naisei}
-                  </div>
-                  <div className="text-slate-400 ml-4 my-4 text-md hidden md:block">
-                    {item.created_at}
-                  </div>
-                </div>
-              ))
-            }
-            {selectData.length <= 0 && <div className="text-slate-200">There was no activity on the date selected.</div>}
-          </div>
-        </div>
-        : <div className="text-2xl">...loading</div>
+      {!loading ?
+        <>
+          {selectData ?
+            <div className="flex justify-center">
+              <div className="">
+                {
+                  selectData.map((item: any) => (
+                    <div
+                      className="flex mr-6 cursor-pointer"
+                      key={item.id}
+                      onClick={() => handleItemClick(item.id)}
+                    >
+                      <div className="my-4 truncate">
+                        {item.naisei}
+                      </div>
+                      <div className="text-slate-400 ml-4 my-4 text-md hidden md:block">
+                        {item.created_at}
+                      </div>
+                    </div>
+                  ))
+                }
+                {selectData.length <= 0 && <div className="">There was no activity on the date selected.</div>}
+              </div>
+            </div>
+            : <div></div>
+          }
+        </>
+        :
+        <div>loading.......</div>
       }
-      <CreateNaisei />
+
     </>
   )
 }

@@ -7,7 +7,6 @@ const css = `
   }
   .my-selected:hover:not([disabled]) { 
     border-color: gray;
-    color: #b71adb;
   }
   .my-today { 
     font-weight: bold;
@@ -23,7 +22,7 @@ import { Activity } from './Activity';
 import { useDateStore } from '@/app/hooks/SelectDateStore';
 
 
-export default function Calendar() {
+export function Calendar() {
 
   const selectedDay = useDateStore((state) => state.selectedDay);
   const setSelectedDay = useDateStore((state) => state.setSelectedDay);
@@ -63,7 +62,7 @@ export default function Calendar() {
         />
         <i className={style.i}></i>
       </div>
-      <Activity />
+      {/* <Activity /> */}
     </>
   );
 }

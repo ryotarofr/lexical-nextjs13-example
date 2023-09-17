@@ -4,26 +4,21 @@ import { Note } from "@/app/components/Note"
 import { Editor } from "../../text-editor"
 import useRefreshStore from "@/app/hooks/useRefreshStore";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { MdKeyboardBackspace } from "react-icons/md";
+import { CreateNaisei } from "@/app/components/PostContent/CreateNaisei";
+import { useToggleEditor } from "@/app/hooks/useToggleEditor";
 
 const NotePage = () => {
-  const [open, setOpen] = useState(false)
-  const router = useRouter();
   const { refresh } = useRefreshStore();
-
-  const handleBack = () => {
-    // router.back()
-    setOpen(false)
-  }
+  const { isOpen, onClose, onOpen } = useToggleEditor()
   return (
     <>
-      {open ?
-        <>
+      {isOpen ?
+        <div className="max-w-2xl mx-auto">
           <div className="flex justify-start ml-4">
             <button
-              className="border-none"
-              onClick={handleBack}
+              className="border-none cursor-pointer hover:text-blue-400"
+              onClick={() => onClose()}
             >
               <MdKeyboardBackspace size={24} />
             </button>
@@ -36,17 +31,16 @@ const NotePage = () => {
             <div></div>
           }
 
-        </>
+        </div>
         :
         <>
           {/* <div>Note一覧</div> */}
-          <div onClick={() => setOpen(true)}>
+          <div onClick={() => onOpen()}>
             <Note />
           </div>
+          <CreateNaisei />
         </>
       }
-
-
     </>
   )
 }

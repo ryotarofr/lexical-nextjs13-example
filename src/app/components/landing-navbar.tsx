@@ -6,7 +6,7 @@ import Link from "next/link"
 import { useAuth } from "@clerk/nextjs";
 import { cn } from "../utils/utils";
 
-const font = Montserrat({ weight: '600', subsets: ['latin'] });
+// const font = Montserrat({ weight: '600', subsets: ['latin'] });
 
 export const LandingNavbar = () => {
   const { isSignedIn } = useAuth();
@@ -17,12 +17,14 @@ export const LandingNavbar = () => {
         <div className="relative h-12 w-12 mr-4">
           <Image fill alt="Logo" src="/logo.png" />
         </div>
-        <h1 className={cn("text-2xl font-bold", font.className)}>
+        <h1
+        // className={cn("text-2xl font-bold", font.className)}
+        >
           Naisei
         </h1>
       </Link>
       <div className="flex items-center gap-x-2">
-        <Link href={isSignedIn ? "/note" : "/sign-up"}>
+        <Link href={isSignedIn ? "/calendar" : "/sign-up"}>
           Get Started
         </Link>
       </div>

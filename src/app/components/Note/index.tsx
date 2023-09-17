@@ -1,16 +1,14 @@
 "use client"
 
 import { useEffect, useState } from "react";
-import { CreateNaisei } from "../PostContent/CreateNaisei";
 import useRefreshStore from "@/app/hooks/useRefreshStore";
 import useGetAllNaisei from "@/app/hooks/useGetNaiseiAll";
 import { useNaiseiIdStore } from "@/app/hooks/useNaiseiIdStore";
-import Link from "next/link";
 
 export const Note = () => {
   const [naisei, setNaisei] = useState([])
   const { toggleRefresh } = useRefreshStore()
-  const { data }: any = useGetAllNaisei()
+  const { data, loading }: any = useGetAllNaisei()
 
   // useEffect内はGetしたnaiseiのデータを即時反映させるために必要(もっといい方法ありそう)
   useEffect(() => {
@@ -68,18 +66,26 @@ export const Note = () => {
           <span className="mt-8 px-2 text-indigo-200 text-2xl font-bold italic border-b">Note</span>
         </div> */}
         {/* <CreateNaisei /> */}
-        {naisei.map((item: any) => (
-          <div
-            // href={`/${item.id}`}
-            key={item.id}
-            onClick={() => handleItemClick(item.id)}
-            className="my-2 rounded-md cursor-pointer px-2"
-          >
-            <div className="text-start text-3xl">{item.naisei}</div>
-            <div className="text-slate-400 text-end">{item.created_at}</div>
-          </div>
-        )
-        )}
+        {!loading
+          ?
+          <>
+            {naisei.map((item: any) => (
+              <div
+                // href={`/${item.id}`}
+                key={item.id}
+                onClick={() => handleItemClick(item.id)}
+                className="my-2 rounded-md cursor-pointer px-2"
+              >
+                <div className="text-start text-3xl">{item.naisei}</div>
+                <div className="text-slate-400 text-end">{item.created_at}</div>
+              </div>
+            )
+            )}
+
+          </>
+          :
+          <div>loading.....</div>
+        }
       </div>
     </div>
   )
