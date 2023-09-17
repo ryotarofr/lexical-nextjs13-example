@@ -42,6 +42,7 @@ export const Note = () => {
           created_at: item.created_at.split('T')[0] // 日付部分だけを取得
         };
       });
+      newCreatedAt.sort((a: any, b: any) => b.id - a.id);
       setNaisei(newCreatedAt)
     }
     processData();
@@ -76,12 +77,12 @@ export const Note = () => {
                 onClick={() => handleItemClick(item.id)}
                 className="my-2 rounded-md cursor-pointer px-2"
               >
-                <div className="text-start text-3xl">{item.naisei}</div>
+                <div className="text-start text-3xl break-words whitespace-pre-wrap">{item.naisei}</div>
                 <div className="text-slate-400 text-end">{item.created_at}</div>
               </div>
             )
             )}
-
+            {naisei.length <= 0 && <div className="text-lg">Make a post now!</div>}
           </>
           :
           <div>loading.....</div>

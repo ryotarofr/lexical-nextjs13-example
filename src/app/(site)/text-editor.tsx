@@ -134,6 +134,23 @@ export function Editor(): JSX.Element | null {
             });
     }
 
+    const handleDelete = async (e: SyntheticEvent) => {
+        e.preventDefault();
+        onClose()
+        // setNaisei("")
+        const apiUrl = `/api/naisei/${selectedId}`;
+        axios.delete(apiUrl)
+            .then(response => {
+                // toast.success('Updated Naisei!!!!', { duration: 5000 })
+                // fetchIsNaisei()
+                fetch()
+                return
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    }
+
     const editorConfig = {
         // The editor theme
         theme: ExampleTheme,
@@ -188,13 +205,16 @@ export function Editor(): JSX.Element | null {
 
                     <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
                     {/* <CreateNaisei /> */}
-                    <form>
-                        <button className='' onClick={handleUpdate}>Update Naisei</button>
-                        <Toaster
-                            position="top-center"
-                            reverseOrder={false}
-                        />
-                    </form>
+
+                    <div className="flex justify-end">
+                        <button className='mx-4 mb-2 mt-2 text-md cursor-pointer rounded-lg border-none px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white' onClick={handleUpdate}>Update</button>
+                        <button className='mx-4 mb-2 mt-2 text-md cursor-pointer rounded-lg border-none px-4 py-2 bg-red-600 hover:bg-red-700 text-white' onClick={handleDelete}>Delete</button>
+                    </div>
+                    <Toaster
+                        position="top-center"
+                        reverseOrder={false}
+                    />
+
                     {/* <TreeViewPlugin /> */}
                 </div>
             </div>

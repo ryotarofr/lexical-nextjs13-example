@@ -13,7 +13,7 @@ const CalendarPage = () => {
   return (
     <>
       {isOpen ?
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-3xl mx-auto">
           <div className="flex justify-start ml-4">
             <button
               className="border-none cursor-pointer hover:text-blue-400"
