@@ -3,7 +3,7 @@
 import { LandingHero } from "../components/landing-hero";
 import { LandingNavbar } from "../components/landing-navbar";
 import { LandingContent } from "../components/landing-content";
-import { TCanvas } from "../components/Canvas/TCanvas";
+// import { TCanvas } from "../components/Canvas/TCanvas";
 import { LandingContent2 } from "../components/landing-content2";
 
 
