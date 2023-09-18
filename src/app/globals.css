@@ -6,6 +6,13 @@
 @tailwind components;
 @tailwind utilities;
 
+html{
+  margin: 0;
+}
+body{
+  margin: 0;
+}
+
 :root ::selection {
   background-color: rgb(56, 197, 129);
   color: white;
