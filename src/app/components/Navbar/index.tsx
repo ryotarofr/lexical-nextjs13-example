@@ -7,6 +7,7 @@ import Image from "next/image";
 import { BsMenuApp } from "react-icons/bs"
 import { useState } from "react";
 import { UserButton } from "@clerk/nextjs";
+import { ProButton } from "../ProButton";
 
 const navItems = [
   {
@@ -23,7 +24,13 @@ const navItems = [
   },
 ];
 
-export default function NavBar() {
+export default function NavBar({
+  apiLimitCount = 0,
+  isPro = false
+}: {
+  apiLimitCount: number;
+  isPro: boolean;
+}) {
   let pathname = usePathname() || "/";
 
   return (
@@ -54,8 +61,11 @@ export default function NavBar() {
           })}
         </div>
         <UserButton afterSignOutUrl="/" />
-      </nav>
 
-    </div >
+      </nav>
+      <div className="flex justify-end">
+        <ProButton isPro={isPro} apiLimitCount={apiLimitCount} />
+      </div >
+    </div>
   );
 }

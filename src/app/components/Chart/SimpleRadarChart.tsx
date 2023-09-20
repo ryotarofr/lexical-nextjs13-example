@@ -28,9 +28,9 @@ import {
 
 const data = [
   {
-    emotion: 'joy',
-    A: 100,
-    B: 90,
+    emotion: 'anticipation',
+    A: 65,
+    B: 85,
     fullMark: 150,
   },
   {
@@ -70,9 +70,9 @@ const data = [
     fullMark: 150,
   },
   {
-    emotion: 'anticipation',
-    A: 65,
-    B: 85,
+    emotion: 'joy',
+    A: 100,
+    B: 90,
     fullMark: 150,
   },
 ];
@@ -87,8 +87,8 @@ const SimpleRadarChart = () => {
           </span>
         </div>
         <div className='w-hull flex justify-center'>
-          <ResponsiveContainer width={"80%"} height={400}>
-            <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
+          <ResponsiveContainer width={"100%"} height={400}>
+            <RadarChart cx="50%" cy="50%" outerRadius="70%" data={data}>
               <PolarGrid />
               <PolarAngleAxis dataKey="emotion" />
               <PolarRadiusAxis angle={72.5} domain={[0, 100]} />
@@ -97,7 +97,7 @@ const SimpleRadarChart = () => {
               <Legend />
             </RadarChart>
           </ResponsiveContainer>
-          <div className='hidden md:block'>
+          <div className='hidden md:block ml-4'>
             <div className='text-xl'>List of dates</div>
             <li>any data......</li>
           </div>

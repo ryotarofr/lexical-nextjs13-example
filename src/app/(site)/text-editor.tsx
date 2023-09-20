@@ -39,10 +39,10 @@ import axios from "axios";
 import { $getRoot, $getSelection } from "lexical";
 import useGetAllNaisei from "../hooks/useGetNaiseiAll";
 import { useNaiseiIdStore } from "../hooks/useNaiseiIdStore";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import ExportPluginJson from "../plugins/ExportPluginJson";
 import { useToggleEditor } from "../hooks/useToggleEditor";
-// import useGetIsNaisei from "../hooks/useGetNaiseiId";
+import { GenarateNaisei } from "../components/GenarateNaisei";
 
 function Placeholder() {
     return <div className="editor-placeholder">Enter some rich text...</div>;
@@ -56,28 +56,42 @@ const EvaluationType = {
     E: 'E',
 }
 
-
-export function Editor(): JSX.Element | null {
-
-    // const [isMounted, setIsMounted] = useState(false)
-
-    // useEffect(() => {
-    //     setIsMounted(true);
-    // }, [])
-
-    // if (!isMounted) return null
-
-
-
+export function Editor({
+    isPro = false
+}: {
+    isPro: boolean;
+}) {
 
     const selectedId = useNaiseiIdStore((state) => state.selectedId)
 
     const [evaluationType, setEvaluationType] = useState(EvaluationType.A);
     const [naisei, setNaisei] = useState('')
     const { data, loading, fetch }: any = useGetAllNaisei()
-    // const { dataIsNaisei, fetchIsNaisei }: any = useGetIsNaisei()
     const { onClose } = useToggleEditor()
+    const [generateData, setGenarateData] = useState("{}")
 
+    // ------------------------
+    // AIにデータ渡す
+    // JSONとして解析
+    const parsedData = JSON.parse(generateData);
+    // 必要なデータを抽出
+    const textObjects: any = [];
+
+    function extractText(obj: any) {
+        // objがnullや空のオブジェクトならreturnする
+        if (!obj || Object.keys(obj).length === 0) return;
+        if (obj.type === 'text') {
+            textObjects.push(obj.text);
+        } else if (obj.children && obj.children.length > 0) {
+            obj.children.forEach((child: any) => extractText(child));
+        }
+    }
+    // parsedData.rootがundefinedでないことを確認する
+    if (parsedData.root) {
+        extractText(parsedData.root);
+    }
+    const textData = textObjects.join(',')
+    // --------------------------------------------------
 
     useEffect(() => {
         setNaisei("")
@@ -95,10 +109,10 @@ export function Editor(): JSX.Element | null {
             setNaisei(""); // selectedNaiseiIdがnullの場合も空に設定
         }
     }, [selectedId, data])
-    console.log("naisei", naisei);
 
     const exportAsJson = (contenAsJson: string) => {
         setNaisei(contenAsJson)
+        setGenarateData(contenAsJson)
         return contenAsJson
     };
 
@@ -177,7 +191,6 @@ export function Editor(): JSX.Element | null {
         ],
     };
 
-
     if (!naisei) return <></>
 
     return (
@@ -204,17 +217,16 @@ export function Editor(): JSX.Element | null {
                     <ComponentPickerMenuPlugin />
 
                     <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
-                    {/* <CreateNaisei /> */}
 
                     <div className="flex justify-end">
                         <button className='mx-4 mb-2 mt-2 text-md cursor-pointer rounded-lg border-none px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white' onClick={handleUpdate}>Update</button>
                         <button className='mx-4 mb-2 mt-2 text-md cursor-pointer rounded-lg border-none px-4 py-2 bg-red-600 hover:bg-red-700 text-white' onClick={handleDelete}>Delete</button>
+                        <GenarateNaisei textData={textData} isPro={isPro} />
                     </div>
                     <Toaster
                         position="top-center"
                         reverseOrder={false}
                     />
-
                     {/* <TreeViewPlugin /> */}
                 </div>
             </div>

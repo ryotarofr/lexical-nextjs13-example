@@ -13,6 +13,7 @@ model Naisei {
   created_at      DateTime       @default(now())
   evaluation_type EvaluationType
   userId          String?
+  emotion         String[]
 }
 
 enum EvaluationType {
@@ -45,12 +46,4 @@ model UserSubscription {
   stripeSubscriptionId   String?   @unique @map(name: "stripe_subscription_id")
   stripePriceId          String?   @map(name: "stripe_price_id")
   stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
-}
-
-model emotion {
-  id        Int      @id @default(autoincrement())
-  userId    String
-  // 配列のオブジェクトデータを格納するフィールド
-  items     Json[]
-  createdAt DateTime @default(now())
 }

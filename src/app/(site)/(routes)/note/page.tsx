@@ -1,46 +1,11 @@
-"use client"
+import { checkSubscription } from "@/app/libs/subscription";
+import { NoteItem } from "@/app/components/Note/NoteItem";
 
-import { Note } from "@/app/components/Note"
-import { Editor } from "../../text-editor"
-import useRefreshStore from "@/app/hooks/useRefreshStore";
-import { useState } from "react";
-import { MdKeyboardBackspace } from "react-icons/md";
-import { CreateNaisei } from "@/app/components/PostContent/CreateNaisei";
-import { useToggleEditor } from "@/app/hooks/useToggleEditor";
-
-const NotePage = () => {
-  const { refresh } = useRefreshStore();
-  const { isOpen, onClose, onOpen } = useToggleEditor()
+const NotePage = async () => {
+  const isPro = await checkSubscription();
   return (
     <>
-      {isOpen ?
-        <div className="max-w-3xl mx-auto">
-          <div className="flex justify-start ml-4">
-            <button
-              className="border-none cursor-pointer hover:text-blue-400"
-              onClick={() => onClose()}
-            >
-              <MdKeyboardBackspace size={24} />
-            </button>
-          </div >
-          {!refresh ?
-            <>
-              <Editor />
-            </>
-            :
-            <div></div>
-          }
-
-        </div>
-        :
-        <>
-          <CreateNaisei />
-          {/* <div>Note一覧</div> */}
-          <div onClick={() => onOpen()}>
-            <Note />
-          </div>
-        </>
-      }
+      <NoteItem isPro={isPro} />
     </>
   )
 }
