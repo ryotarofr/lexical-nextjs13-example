@@ -42,8 +42,9 @@ export const Note = () => {
           created_at: item.created_at.split('T')[0] // 日付部分だけを取得
         };
       });
-      newCreatedAt.sort((a: any, b: any) => b.id - a.id);
+      newCreatedAt.sort((a: any, b: any) => b.id - a.id); //日付を降順にならべ替え
       setNaisei(newCreatedAt)
+
     }
     processData();
   }, [data, setNaisei])

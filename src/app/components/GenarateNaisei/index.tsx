@@ -4,15 +4,18 @@ import { useNaiseiIdStore } from "@/app/hooks/useNaiseiIdStore";
 // import { checkSubscription } from "@/app/libs/subscription";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 
 
 export function GenarateNaisei({
   textData,
-  isPro = false
+  isPro = false,
+  emotion,
 }: {
   textData: any
   isPro: boolean;
+  emotion: string
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [theme, setTheme] = useState<string[]>([]);
@@ -24,7 +27,7 @@ export function GenarateNaisei({
     if (textData === "") return;
     setIsLoading(true);
     // const API_KEY = process.env.OPENAI_API_KEY
-    const API_KEY = "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"
+    const API_KEY = "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"
     const model = "text-davinci-003";
     const URL = "https://api.openai.com/v1/engines/" + model + "/completions";
 
@@ -32,19 +35,18 @@ export function GenarateNaisei({
     文章から、著者の心理状態を分析することに長けています。
     次の文章をもとに心理分析してください。
     *文章の返答形式はそれぞれの感情属性に1~10までの点数で評価してください。
-    {"EmotionalAnalysis":[
-      {"negative:""},
-      {"positive": ""},
-      {"Neutral": ""},
-      { "joy": "" },
-      { "trust": "" },
-      { "fear": "" },
-      { "surprise": "" },
-      { "sadness": "" },
-      { "disgust": "" },
-      { "anger": "" },
-      { "anticipation": "" }
-      }
+    {EmotionalAnalysis:[
+      {"negative":""},
+      {"positive":""},
+      {"neutral":""},
+      {"joy":""},
+      {"trust":""},
+      {"fear":""},
+      {"surprise":""},
+      {"sadness":""},
+      {"disgust":""},
+      {"anger":""},
+      {"anticipation":""}
     ]}
     の形式で精神分析をします。
 
@@ -64,12 +66,6 @@ export function GenarateNaisei({
 
     const json = await res.json();
 
-    // const list = json.choices.map((value: { text: string }) => {
-    //   const str = `{"EmotionalAnalysis":`
-    //   const i = value.text.indexOf(str);
-    //   return value.text.substring(i);
-    // });
-
     const list = json.choices ? json.choices.map((value: { text: string }) => {
       const str = `{"EmotionalAnalysis":`
       const i = value.text.indexOf(str);
@@ -88,7 +84,7 @@ export function GenarateNaisei({
 
     axios.put(apiUrl, updatedData)
       .then(response => {
-        // toast.success('Updated Naisei!!!!', { duration: 5000 })
+        toast.success('Generated!!!!', { duration: 2000 })
         // fetchIsNaisei()
         return response
       })
@@ -97,21 +93,44 @@ export function GenarateNaisei({
       });
   };
 
+
+  const handleGenerated = () => {
+    toast.error('Already Generated.', { duration: 2000 })
+  }
+
   return (
-    <div>
-      {isPro ?
-        <form onSubmit={handleSubmit}>
-          <button
-            className={`mx-3 p-1.5 rounded-md font-medium bg-blue-500`}
-            type="submit"
-          >
-            Generate
+    <>
+      {/* {emotion.length < 1 ? */}
+      <>
+        {isPro &&
+          <>
+            <button
+              onClick={handleSubmit}
+              className="mx-4 mb-2 mt-2 text-md cursor-pointer rounded-lg border-none px-4 py-2 bg-lime-600 hover:bg-lime-700 text-white"
+            >
+              Generate
+            </button>
+            <Toaster
+              position="top-center"
+              reverseOrder={false}
+            />
+          </>
+        }
+        <p>{isLoading ? "ローディング中" : null}</p>
+      </>
+      {/* : */}
+      {/* <>
+          <button onClick={handleGenerated} className="mx-4 mb-2 mt-2 text-md cursor-pointer rounded-lg border-none px-4 py-2 bg-slate-500 text-white">
+            Generated
           </button>
-        </form>
-        :
-        <div>not Pro</div>
-      }
-      <p>{isLoading ? "ローディング中" : null}</p>
-    </div>
+          <Toaster
+            position="top-center"
+            reverseOrder={false}
+          />
+        </>
+      } */}
+    </ >
+
   )
 }
+

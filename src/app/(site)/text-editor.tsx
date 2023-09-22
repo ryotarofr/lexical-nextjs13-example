@@ -69,6 +69,8 @@ export function Editor({
     const { data, loading, fetch }: any = useGetAllNaisei()
     const { onClose } = useToggleEditor()
     const [generateData, setGenarateData] = useState("{}")
+    const [emotion, setEmotion] = useState('')
+
 
     // ------------------------
     // AIにデータ渡す
@@ -95,12 +97,13 @@ export function Editor({
 
     useEffect(() => {
         setNaisei("")
-
+        setEmotion('')
         if (selectedId !== null) {
             // data配列から選択されたIDに一致する要素を探す
             const selectedData = data.find((item: any) => item.id === selectedId);
             if (selectedData) {
                 setNaisei(selectedData.naisei);
+                setEmotion(selectedData.emotion)
 
             } else {
                 setNaisei(""); // データが見つからない場合は空に設定
@@ -115,7 +118,6 @@ export function Editor({
         setGenarateData(contenAsJson)
         return contenAsJson
     };
-
     function onChange(editorState: any) {
         editorState.read(() => {
             const root = $getRoot();
@@ -221,7 +223,7 @@ export function Editor({
                     <div className="flex justify-end">
                         <button className='mx-4 mb-2 mt-2 text-md cursor-pointer rounded-lg border-none px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white' onClick={handleUpdate}>Update</button>
                         <button className='mx-4 mb-2 mt-2 text-md cursor-pointer rounded-lg border-none px-4 py-2 bg-red-600 hover:bg-red-700 text-white' onClick={handleDelete}>Delete</button>
-                        <GenarateNaisei textData={textData} isPro={isPro} />
+                        <GenarateNaisei textData={textData} isPro={isPro} emotion={emotion} />
                     </div>
                     <Toaster
                         position="top-center"
